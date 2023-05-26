@@ -1,0 +1,12 @@
+﻿.page{
+
+}
+
+.page__inner {
+    display: flex;
+    flex-direction: row;
+}
+
+.page__smallcontainer {
+    width: $main-width;
+}

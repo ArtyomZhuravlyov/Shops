@@ -1,0 +1,21 @@
+﻿@inherits LayoutComponentBase
+
+
+<div class="page">
+    <header class="header"></header>
+    <div class="page__inner">
+        <MudNavMenu Class="nav" Rounded="true" Color="Color.Primary">
+            <MudNavLink Href="/metric" Icon="@Icons.Material.Filled.Storage">Метрика</MudNavLink>
+            <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Storage">Магазины</MudNavLink>
+        </MudNavMenu>
+
+        <MudContainer MaxWidth="MaxWidth.Large">
+            @Body
+        </MudContainer>
+
+    </div>
+</div>
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />

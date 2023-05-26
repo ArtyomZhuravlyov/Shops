@@ -1,0 +1,233 @@
+﻿@page "/metric"
+@using Shops.Client.Data
+@using PSC.Blazor.Components.Chartjs
+@using PSC.Blazor.Components.Chartjs.Enums
+@using PSC.Blazor.Components.Chartjs.Models
+@using PSC.Blazor.Components.Chartjs.Models.Common
+@using PSC.Blazor.Components.Chartjs.Models.Bar
+@using Shops.Contracts.Dto.Metrics;
+
+@inject HttpClient _http
+
+<MudGrid>
+    @if (_metric == null)
+    {
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Animation="MudBlazor.Animation.Wave" Height="500px" />
+    }
+    else
+    {
+        <MudItem lg="12" xs="12">
+            <MudText Align="MudBlazor.Align.Center" Typo="Typo.h6">Общий запас</MudText>
+        </MudItem>
+        <MudItem lg="4" xs="4">
+            <MudPaper Class="pa-3 d-flex align-center justify-space-around">
+                <div>
+                    <MudText>Минимальное значение</MudText>
+                    <MudText Typo="Typo.subtitle2">@_metric.MetricTotalStock.TotalStockAgr.Min</MudText>
+                </div>
+                <MudIcon Icon="@Icons.Material.Filled.Analytics" Size="Size.Large" Color="Color.Primary" />
+            </MudPaper>
+        </MudItem>
+        <MudItem lg="4" xs="4">
+            <MudPaper Class="pa-3 d-flex align-center justify-space-around">
+                <div>
+                    <MudText>Cреднее значение</MudText>
+                    <MudText Typo="Typo.subtitle2">@_metric.MetricTotalStock.TotalStockAgr.Avg</MudText>
+                </div>
+                <MudIcon Icon="@Icons.Material.Filled.SsidChart" Size="Size.Large" Color="Color.Primary" />
+            </MudPaper>
+        </MudItem>
+        <MudItem lg="4" xs="4">
+            <MudPaper Class="pa-3 d-flex align-center justify-space-around">
+                <div>
+                    <MudText>Максимальное значение</MudText>
+                    <MudText Typo="Typo.subtitle2">@_metric.MetricTotalStock.TotalStockAgr.Max</MudText>
+                </div>
+                <MudIcon Icon="@Icons.Material.Filled.Insights" Size="Size.Large" Color="Color.Primary" />
+            </MudPaper>
+        </MudItem>
+        <MudItem Class="mb-5" lg="12" xs="12">
+            <Chart Config="_configTotal"></Chart>
+        </MudItem>
+
+
+
+        <MudItem lg="12" xs="12">
+            <MudText Align="MudBlazor.Align.Center" Typo="Typo.h6">Точность запасов</MudText>
+        </MudItem>
+        <MudItem lg="4" xs="4">
+            <MudPaper Class="pa-3 d-flex align-center justify-space-around">
+                <div>
+                    <MudText>Минимальное значение</MudText>
+                    <MudText Typo="Typo.subtitle2">@_metric.MetricAccuracy.AccuracyStockAgr.Min</MudText>
+                </div>
+                <MudIcon Icon="@Icons.Material.Filled.Analytics" Size="Size.Large" Color="Color.Primary" />
+            </MudPaper>
+        </MudItem>
+        <MudItem lg="4" xs="4">
+            <MudPaper Class="pa-3 d-flex align-center justify-space-around">
+                <div>
+                    <MudText>Cреднее значение</MudText>
+                    <MudText Typo="Typo.subtitle2">@_metric.MetricAccuracy.AccuracyStockAgr.Avg</MudText>
+                </div>
+                <MudIcon Icon="@Icons.Material.Filled.SsidChart" Size="Size.Large" Color="Color.Primary" />
+            </MudPaper>
+        </MudItem>
+        <MudItem lg="4" xs="4">
+            <MudPaper Class="pa-3 d-flex align-center justify-space-around">
+                <div>
+                    <MudText>Максимальное значение</MudText>
+                    <MudText Typo="Typo.subtitle2">@_metric.MetricAccuracy.AccuracyStockAgr.Max</MudText>
+                </div>
+                <MudIcon Icon="@Icons.Material.Filled.Insights" Size="Size.Large" Color="Color.Primary" />
+            </MudPaper>
+        </MudItem>
+        <MudItem lg="12" xs="12">
+            <Chart Config="_configAccuracy"></Chart>
+        </MudItem>
+
+
+        <MudItem lg="12" xs="12">
+            <MudText Align="MudBlazor.Align.Center" Typo="Typo.h6">Наличие на полу</MudText>
+        </MudItem>
+        <MudItem lg="4" xs="4">
+            <MudPaper Class="pa-3 d-flex align-center justify-space-around">
+                <div>
+                    <MudText>Минимальное значение</MudText>
+                    <MudText Typo="Typo.subtitle2">@_metric.MetricOnFloorStock.OnFloorStockAgr.Min</MudText>
+                </div>
+                <MudIcon Icon="@Icons.Material.Filled.Analytics" Size="Size.Large" Color="Color.Primary" />
+            </MudPaper>
+        </MudItem>
+        <MudItem lg="4" xs="4">
+            <MudPaper Class="pa-3 d-flex align-center justify-space-around">
+                <div>
+                    <MudText>Cреднее значение</MudText>
+                    <MudText Typo="Typo.subtitle2">@_metric.MetricOnFloorStock.OnFloorStockAgr.Avg</MudText>
+                </div>
+                <MudIcon Icon="@Icons.Material.Filled.SsidChart" Size="Size.Large" Color="Color.Primary" />
+            </MudPaper>
+        </MudItem>
+        <MudItem lg="4" xs="4">
+            <MudPaper Class="pa-3 d-flex align-center justify-space-around">
+                <div>
+                    <MudText>Максимальное значение</MudText>
+                    <MudText Typo="Typo.subtitle2">@_metric.MetricOnFloorStock.OnFloorStockAgr.Max</MudText>
+                </div>
+                <MudIcon Icon="@Icons.Material.Filled.Insights" Size="Size.Large" Color="Color.Primary" />
+            </MudPaper>
+        </MudItem>
+        <MudItem Class="mb-5" lg="12" xs="12">
+            <Chart Config="_configOnFloorAv"></Chart>
+        </MudItem>
+
+              <MudItem lg="12" xs="12">
+            <MudText Align="MudBlazor.Align.Center" Typo="Typo.h6">Средний возраст запасов </MudText>
+            </MudItem>
+            <MudItem lg="4" xs="4">
+                <MudPaper Class="pa-3 d-flex align-center justify-space-around">
+                    <div>
+                        <MudText>Минимальное значение</MudText>
+                        <MudText Typo="Typo.subtitle2">@_metric.MetricMeanAgeStock.MeanAgeStockAgr.Min</MudText>
+                    </div>
+                    <MudIcon Icon="@Icons.Material.Filled.Analytics" Size="Size.Large" Color="Color.Primary" />
+                </MudPaper>
+            </MudItem>
+            <MudItem lg="4" xs="4">
+                <MudPaper Class="pa-3 d-flex align-center justify-space-around">
+                    <div>
+                        <MudText>Cреднее значение</MudText>
+                        <MudText Typo="Typo.subtitle2">@_metric.MetricMeanAgeStock.MeanAgeStockAgr.Avg</MudText>
+                    </div>
+                    <MudIcon Icon="@Icons.Material.Filled.SsidChart" Size="Size.Large" Color="Color.Primary" />
+                </MudPaper>
+            </MudItem>
+            <MudItem lg="4" xs="4">
+                <MudPaper Class="pa-3 d-flex align-center justify-space-around">
+                    <div>
+                        <MudText>Максимальное значение</MudText>
+                        <MudText Typo="Typo.subtitle2">@_metric.MetricMeanAgeStock.MeanAgeStockAgr.Max</MudText>
+                    </div>
+                    <MudIcon Icon="@Icons.Material.Filled.Insights" Size="Size.Large" Color="Color.Primary" />
+                </MudPaper>
+            </MudItem>
+            <MudItem Class="mb-5" lg="12" xs="12">
+            <Chart Config="_configMeanAge"></Chart>
+            </MudItem>
+    }
+
+</MudGrid>
+
+
+@code {
+
+    private BarChartConfig _configTotal = new();
+    private BarChartConfig _configAccuracy = new();
+    private BarChartConfig _configOnFloorAv = new();
+    private BarChartConfig _configMeanAge = new();
+
+    private MetricDto _metric;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _metric = await _http.GetFromJsonAsync<MetricDto>($"api/Shop/GetMetric");
+
+        SetConfigTotal();
+        SetConfigAccuracy();
+        SetConfigOnFloorAv();
+        SetConfigMeanAge();
+    }
+
+    private void SetConfigTotal()
+    {
+        _configTotal.Data.Labels = new List<string>(_metric.MetricTotalStock.TotalStocks.Select(x => x.NameShop));
+        _configTotal.Data.Datasets.Add(new BarDataset()
+            {
+                Label = "TotalStock",
+                Data = _metric.MetricTotalStock.TotalStocks.Select(x => (decimal?)x.TotalStock).ToList(),
+                BackgroundColor = new List<string>() { "rgb(89, 74, 226)" },
+                BorderColor = new List<string>() { "#594ae2" },
+                BorderWidth = 1
+            });
+    }
+
+    private void SetConfigAccuracy()
+    {
+        _configAccuracy.Data.Labels = new List<string>(_metric.MetricAccuracy.AccuracyStocks.Select(x => x.NameShop));
+        _configAccuracy.Data.Datasets.Add(new BarDataset()
+            {
+                Label = "Accuracy",
+                Data = _metric.MetricAccuracy.AccuracyStocks.Select(x => (decimal?)x.AccuracyStock).ToList(),
+                BackgroundColor = new List<string>() { "rgb(89, 74, 226)" },
+                BorderColor = new List<string>() { "#594ae2" },
+                BorderWidth = 1
+            });
+    }
+
+    private void SetConfigOnFloorAv()
+    {
+        _configOnFloorAv.Data.Labels = new List<string>(_metric.MetricOnFloorStock.OnFloorStocks.Select(x => x.NameShop));
+        _configOnFloorAv.Data.Datasets.Add(new BarDataset()
+            {
+                Label = "OnFloorAv",
+                Data = _metric.MetricOnFloorStock.OnFloorStocks.Select(x => (decimal?)x.OnFloorStock).ToList(),
+                BackgroundColor = new List<string>() { "rgb(89, 74, 226)" },
+                BorderColor = new List<string>() { "#594ae2" },
+                BorderWidth = 1
+            });
+    }
+
+    private void SetConfigMeanAge()
+    {
+        _configMeanAge.Data.Labels = new List<string>(_metric.MetricMeanAgeStock.MeanAgeStock.Select(x => x.NameShop));
+        _configMeanAge.Data.Datasets.Add(new BarDataset()
+            {
+                Label = "MeanAge",
+                Data = _metric.MetricMeanAgeStock.MeanAgeStock.Select(x => (decimal?)x.MeanAgeStock).ToList(),
+                BackgroundColor = new List<string>() { "rgb(89, 74, 226)" },
+                BorderColor = new List<string>() { "#594ae2" },
+                BorderWidth = 1
+            });
+    }
+}
+

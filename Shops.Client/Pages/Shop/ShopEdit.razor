@@ -1,0 +1,102 @@
+﻿@page "/shop/edit/{id:int}"
+
+@using Shops.Contracts.Dto.Category;
+@using Shops.Contracts.Dto.Country;
+@using Shops.Contracts.Dto.Shop;
+@inject HttpClient _http
+@inject IMapper _mapper
+@inject NavigationManager _navigation
+
+<div class="page__smallcontainer">
+    @if (_shop == null)
+    {
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Animation="MudBlazor.Animation.Wave" Height="500px" />
+    }
+    else
+    {
+        <EditForm Model="_shop" OnValidSubmit="OnValidSubmit">
+            <ObjectGraphDataAnnotationsValidator />
+            <MudGrid>
+                <MudItem lg="6" xs="6">
+                    <MudTextField @bind-Value="_shop.Name" Label="Name" Variant="Variant.Text" For="@(() => _shop.Name)"></MudTextField>
+                </MudItem>
+                <MudItem lg="6" xs="6">
+                    <MudTextField @bind-Value="_shop.Email" Label="Email" Variant="Variant.Text" For="@(() => _shop.Email)"></MudTextField>
+                </MudItem>
+                <MudItem lg="6" xs="6">
+                    <MudSelect @bind-Value="_shop.Category.Id" Label="Category" For="@(() => _shop.Category.Id)">
+                        @foreach (var item in _categories)
+                        {
+                            <MudSelectItem Value="@item.Id">@item.Id</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem lg="6" xs="6">
+                    <MudSelect @bind-Value="_shop.Country.Id" Label="Country" For="@(() => _shop.Country.Id)">
+                        @foreach (var item in _countries)
+                        {
+                            <MudSelectItem Value="@item.Id">@item.Code</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem lg="12" xs="12">
+                    <MudText Align="Align.Center">Stock</MudText>
+                </MudItem>
+                <MudItem lg="4" xs="4">
+                    <MudNumericField HideSpinButtons="true" T="long" @bind-Value="_shop.Stock.Backstore" Label="Backstore" Variant="Variant.Text" For="@(() => _shop.Stock.Backstore)" Min="0" />
+                </MudItem>
+                <MudItem lg="4" xs="4">
+                    <MudNumericField HideSpinButtons="true" T="long" @bind-Value="_shop.Stock.Frontstore" Label="Frontstore" Variant="Variant.Text" For="@(() => _shop.Stock.Frontstore)" Min="0" />
+                </MudItem>
+                <MudItem lg="4" xs="4">
+                    <MudNumericField HideSpinButtons="true" T="int" @bind-Value="_shop.Stock.ShoppingWindow" Label="ShoppingWindow" Variant="Variant.Text" For="@(() => _shop.Stock.ShoppingWindow)" Min="0" />
+                </MudItem>
+                <MudItem lg="4" xs="4">
+                    <MudNumericField HideSpinButtons="true" @bind-Value="_shop.Stock.Accuracy" Label="Accuracy" Variant="Variant.Text" For="@(() => _shop.Stock.Accuracy)" />
+                </MudItem>
+                <MudItem lg="4" xs="4">
+                    <MudNumericField HideSpinButtons="true" @bind-Value="_shop.Stock.OnFloorAvailability" Label="OnFloorAvailability" Variant="Variant.Text" For="@(() => _shop.Stock.OnFloorAvailability)" />
+                </MudItem>
+                <MudItem lg="4" xs="4">
+                    <MudNumericField HideSpinButtons="true" T="int" @bind-Value="_shop.Stock.MeanAge" Label="OnFloorAvailability" Variant="Variant.Text" For="@(() => _shop.Stock.MeanAge)" Min="0" />
+                </MudItem>
+                <MudItem lg="12" xs="12">
+                    <MudText Align="Align.Center">Manager</MudText>
+                </MudItem>
+                <MudItem lg="6" xs="6">
+                    <MudTextField @bind-Value="_shop.Manager.FirstName" Label="FirstName" Variant="Variant.Text" For="@(() => _shop.Manager.FirstName)"></MudTextField>
+                </MudItem>
+                <MudItem lg="6" xs="6">
+                    <MudTextField @bind-Value="_shop.Manager.LastName" Label="LastName" Variant="Variant.Text" For="@(() => _shop.Manager.LastName)"></MudTextField>
+                </MudItem>
+                <MudItem lg="12" xs="12">
+                    <MudTextField @bind-Value="_shop.Manager.Email" Label="Email" Variant="Variant.Text" For="@(() => _shop.Manager.Email)"></MudTextField>
+                </MudItem>
+            </MudGrid>
+            <MudButton ButtonType="ButtonType.Submit" Class="d-block my-6 mx-auto btn btn--300" Variant="Variant.Filled" Color="Color.Primary">Сохранить</MudButton>
+        </EditForm>
+        
+    }
+</div>
+@code {
+
+    [Parameter] public int Id { get; set; }
+
+    private ShopDto _shop;
+
+    private List<CategoryDto> _categories;
+    private List<CountryDto> _countries;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _shop = await _http.GetFromJsonAsync<ShopDto>($"api/Shop/{Id}");
+        _categories = await _http.GetFromJsonAsync<List<CategoryDto>>($"api/Category");
+        _countries = await _http.GetFromJsonAsync<List<CountryDto>>($"api/Country");
+    }
+
+    private async void OnValidSubmit()
+    {
+        await _http.PutAsJsonAsync($"api/shop", _shop);
+        _navigation.NavigateTo($@"/shop/{Id}");     
+    }
+}

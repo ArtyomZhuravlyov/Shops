@@ -1,0 +1,42 @@
+﻿@page "/"
+@using Shops.Contracts.Dto.Shop;
+@inject HttpClient _http
+
+<div class="page__smallcontainer">
+    @if (_shops == null)
+    {
+        @for (int i = 0; i < 10; i++)
+        {
+            <MudSkeleton Class="my-3" SkeletonType="SkeletonType.Rectangle" Animation="MudBlazor.Animation.Wave" Height="50px" />
+        }
+    }
+    else
+    {
+        <MudLink Class="my-4 d-block" Href=@($"/shop/create") Underline="Underline.None">
+            <MudPaper Class="py-3 d-flex justify-space-around">
+                <MudText>Создать магазин</MudText>
+            </MudPaper>
+        </MudLink>
+        foreach (var item in _shops)
+        {
+            <MudLink Class="my-3 d-block" Href=@($"/shop/{item.Id}") Underline="Underline.None">
+                <MudPaper Class="py-2 d-flex justify-space-around">
+                    <MudText>@item.Name</MudText>
+                    <MudText>@item.Email</MudText>
+                </MudPaper>
+            </MudLink>
+        }
+    }
+</div>
+
+@code {
+
+    private List<ShopDto> _shops;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _shops = (await _http.GetFromJsonAsync<IEnumerable<ShopDto>>($"api/Shop/"))
+                .OrderBy(x => x.Name)
+                .ToList<ShopDto>();
+    }
+}
